@@ -148,8 +148,11 @@
     border: none;
     background-image: url(/images/icon-check.svg);
     background-size: cover;
-    background-position:center center;
+    background-position: center;
+    background-repeat: no-repeat;
+    image-resolution: 20;
 }
+
 
 .input input[type=text]{
     width: 100%;
@@ -380,9 +383,5 @@
     top:0;    opacity: 1;
 }
 
-.draggable{
-    background:var(--fontColorGrayHover);
-    border-top: 1px solid var(--fontColor);
-    border-bottom: 1px solid var(--fontColor);
-}
+
 
