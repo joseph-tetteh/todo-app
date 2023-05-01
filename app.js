@@ -24,7 +24,6 @@ completed.addEventListener('click',()=>{
 });
 
 
-
 activeClass.forEach(anchor => {
    anchor.addEventListener('click',(e)=>{
        e.currentTarget.href = '#';
@@ -116,16 +115,16 @@ const createTodoItem = (id,value)=>{
     element.setAttribute('id',id);
     element.innerHTML = `
     <div class="checkboxContainer">
-    <input class="checkInput" type="checkbox" hidden>
-    <label for="checkInput" class="checkboxLabel"></label>
-  </div>
-  <p class="item-info">${value}</p>
-  <div class="close-container">
-    <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path fill="#494C6B" fill-rule="evenodd" d="M16.97 0l.708.707L9.546 8.84l8.132 8.132-.707.707-8.132-8.132-8.132 8.132L0 16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z"/>
-    </svg>
-  </div>
+        <input class="checkInput" type="checkbox" hidden>
+        <label for="checkInput" class="checkboxLabel"></label>
+    </div>
+    <p class="item-info">${value}</p>
+    <div class="close-container">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><path fill="#494C6B" fill-rule="evenodd" d="M16.97 0l.708.707L9.546 8.84l8.132 8.132-.707.707-8.132-8.132-8.132 8.132L0 16.97l8.132-8.132L0 .707.707 0 8.84 8.132 16.971 0z"/>
+        </svg>
+    </div>
     `;
-    listParent.appendChild(element);
+   listParent.appendChild(element);
 
    const listIinfos =  document.getElementsByTagName('li');
    const labels = document.querySelectorAll('.checkboxLabel');
@@ -139,88 +138,54 @@ const createTodoItem = (id,value)=>{
        close[i].addEventListener('click',RemoveCurrent);
    }
 
+   //console.log(listIinfos);return;
    sortList(listIinfos);
-
 };
 
 let dragindex=0;
 let dropindex=0;
 let clone="";
 
-// function sortList(target){
-
-//     for(let i = 0; i < target.length; i++){
-
-//         target[i].addEventListener('dragstart',(e)=>{
-//             if (e.currentTarget.id){
-//                 e.dataTransfer.setData('text',e.currentTarget.id);
-//              }
-//         });
-     
-//         target[i].addEventListener('dragover',(e)=>{
-//             e.preventDefault();
-//         });
-
-//         target[i].addEventListener('drop',(e)=>{
-//             e.preventDefault();
-//             clone=e.currentTarget.cloneNode(true);
-//             let data = e.dataTransfer.getData('text'); 
-//                let nodelist=document.getElementsByTagName('li');
-//             for(let i=0;i<nodelist.length;i++)
-//             {
-//                 if(nodelist[i].id==data)
-//                 {
-//                     dragindex=i;
-//                 }
-//             }
-//             document.getElementById("list-items").replaceChild(document.getElementById(data),e.currentTarget);
-//             document.getElementById("list-items").insertBefore(clone,document.getElementById("list-items").childNodes[dragindex]);
-               
-//         });
-//     }
-// }
-
 function sortList(target){
-    for(let i = 0; i < target.length; i++){
 
-        target[i].addEventListener('dragstart',(e)=>{
-            if (e.currentTarget.id){
-                e.dataTransfer.setData('text',e.currentTarget.id);
-             }
+    for (let i = 0; i < target.length; i++) {
+        target[i].addEventListener('dragstart', (e) => {
+        //   console.log('Drag start');
+          if (e.currentTarget.id) {
+            e.dataTransfer.setData('text', e.currentTarget.id);
+          }
         });
-     
-        target[i].addEventListener('dragover',(e)=>{
-            e.preventDefault();
+      
+        target[i].addEventListener('dragover', (e) => {
+          e.preventDefault();
         });
-    
-        target[i].addEventListener('drop',(e)=>{
-            e.preventDefault();
-            clone=e.currentTarget.cloneNode(true);
-            let data = e.dataTransfer.getData('text'); 
-            let nodelist=document.getElementsByTagName('li');
-            for(let i=0;i<nodelist.length;i++)
-            {
-                if(nodelist[i].id==data)
-                {
-                    dragindex=i;
-                    break;
-                }
-            }
-            let parentNode = document.getElementById("list-items");
-            console.log(parentNode);
-            let nodeToReplace = document.getElementById(data);
-            if(parentNode.contains(nodeToReplace)){
-                parentNode.replaceChild(nodeToReplace, e.currentTarget);
-                parentNode.insertBefore(clone, parentNode.childNodes[dragindex]);
+      
+        target[i].addEventListener('drop', (e) => {
+        //   console.log('Drop');
+          e.preventDefault();
+          const data = e.dataTransfer.getData('text');
+          const draggedElement = document.getElementById(data);
+          const droppedElement = e.currentTarget;
+          if (draggedElement !== droppedElement) {
+            const draggedIndex = Array.from(draggedElement.parentNode.children).indexOf(draggedElement);
+            const droppedIndex = Array.from(droppedElement.parentNode.children).indexOf(droppedElement);
+            if (draggedIndex < droppedIndex) {
+              droppedElement.parentNode.insertBefore(draggedElement, droppedElement.nextSibling);
             } else {
-                console.log("Node to replace is not a child of parent node.");
+              droppedElement.parentNode.insertBefore(draggedElement, droppedElement);
             }
+
+             // Swap the items in local storage
+            const items = JSON.parse(localStorage.getItem('list'));
+            const temp = items[draggedIndex];
+            items[draggedIndex] = items[droppedIndex];
+            items[droppedIndex] = temp;
+            localStorage.setItem('list', JSON.stringify(items));
+          }
         });
-    }
-    
+      }
+      
 }
-
-
 
 
 const checkCurrent = (e)=>{
@@ -246,7 +211,6 @@ const RemoveCurrent = (e) =>{
     removeFromLocalStorage(id);
     checkLeftItem();
     setBackToDefault();
-   
 };
 
 const removeFromLocalStorage = (id)=>{
@@ -285,6 +249,3 @@ const setupItems = () =>{
 }
 
 window.addEventListener('load',setupItems);
-
-
-
