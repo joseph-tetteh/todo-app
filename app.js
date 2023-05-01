@@ -91,7 +91,7 @@ const setBackToDefault = () =>{
  };
 
 
-//creating form evenet liseterner
+//creating form event liseterner
 formIinputContainer.addEventListener('submit',(e)=>{
     e.preventDefault(); //preventing submnitting automatically
     const id = new Date().getTime().toString();
@@ -147,8 +147,40 @@ let dragindex=0;
 let dropindex=0;
 let clone="";
 
-function sortList(target){
+// function sortList(target){
 
+//     for(let i = 0; i < target.length; i++){
+
+//         target[i].addEventListener('dragstart',(e)=>{
+//             if (e.currentTarget.id){
+//                 e.dataTransfer.setData('text',e.currentTarget.id);
+//              }
+//         });
+     
+//         target[i].addEventListener('dragover',(e)=>{
+//             e.preventDefault();
+//         });
+
+//         target[i].addEventListener('drop',(e)=>{
+//             e.preventDefault();
+//             clone=e.currentTarget.cloneNode(true);
+//             let data = e.dataTransfer.getData('text'); 
+//                let nodelist=document.getElementsByTagName('li');
+//             for(let i=0;i<nodelist.length;i++)
+//             {
+//                 if(nodelist[i].id==data)
+//                 {
+//                     dragindex=i;
+//                 }
+//             }
+//             document.getElementById("list-items").replaceChild(document.getElementById(data),e.currentTarget);
+//             document.getElementById("list-items").insertBefore(clone,document.getElementById("list-items").childNodes[dragindex]);
+               
+//         });
+//     }
+// }
+
+function sortList(target){
     for(let i = 0; i < target.length; i++){
 
         target[i].addEventListener('dragstart',(e)=>{
@@ -160,25 +192,34 @@ function sortList(target){
         target[i].addEventListener('dragover',(e)=>{
             e.preventDefault();
         });
-
+    
         target[i].addEventListener('drop',(e)=>{
             e.preventDefault();
             clone=e.currentTarget.cloneNode(true);
             let data = e.dataTransfer.getData('text'); 
-               let nodelist=document.getElementsByTagName('li');
+            let nodelist=document.getElementsByTagName('li');
             for(let i=0;i<nodelist.length;i++)
             {
                 if(nodelist[i].id==data)
                 {
                     dragindex=i;
+                    break;
                 }
             }
-            document.getElementById("list-items").replaceChild(document.getElementById(data),e.currentTarget);
-            document.getElementById("list-items").insertBefore(clone,document.getElementById("list-items").childNodes[dragindex]);
-               
+            let parentNode = document.getElementById("list-items");
+            console.log(parentNode);
+            let nodeToReplace = document.getElementById(data);
+            if(parentNode.contains(nodeToReplace)){
+                parentNode.replaceChild(nodeToReplace, e.currentTarget);
+                parentNode.insertBefore(clone, parentNode.childNodes[dragindex]);
+            } else {
+                console.log("Node to replace is not a child of parent node.");
+            }
         });
     }
+    
 }
+
 
 
 
@@ -244,5 +285,6 @@ const setupItems = () =>{
 }
 
 window.addEventListener('load',setupItems);
+
 
 
