@@ -30,10 +30,10 @@ Your users should be able to:
 - **Bonus**: Drag and drop to reorder items on the list
 
 ### Screenshot Dark-mode
-![](images/Screenshot2.jpg)
+![](images/screenshot-dark.jpg)
 
 ### Screenshot Light-mode
-![](images/Screenshot1.jpg)
+![](images/screenshot-light.jpg)
 
 ### Links
 
