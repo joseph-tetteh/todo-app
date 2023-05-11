@@ -3,6 +3,8 @@ document.querySelector('.toggleBackground').addEventListener('click',()=>{
     document.body.classList.toggle('light');
 });
 
+
+
 //getting Items 
 const formIinputContainer = document.querySelector('.input');
 const formValue = document.querySelector('#new-todo');
@@ -255,6 +257,5 @@ const setupItems = () => {
   checkLeftItem();
   setupDragAndDrop();
 };
-
 
 window.addEventListener('load',setupItems);
