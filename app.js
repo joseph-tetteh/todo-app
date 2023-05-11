@@ -3,7 +3,7 @@ document.querySelector('.toggleBackground').addEventListener('click',()=>{
     document.body.classList.toggle('light');
 });
 
-//getting Items
+//getting Items 
 const formIinputContainer = document.querySelector('.input');
 const formValue = document.querySelector('#new-todo');
 const alert = document.querySelector('.alert');
@@ -107,13 +107,14 @@ formIinputContainer.addEventListener('submit',(e)=>{
     }
 });
 
-//creating the item dynamically
-const createTodoItem = (id,value)=>{
-    const element = document.createElement('li');
-    element.classList.add('list-infos');
-    element.draggable = true;
-    element.setAttribute('id',id);
-    element.innerHTML = `
+const createTodoItem = (id, value) => {
+  const element = document.createElement('li');
+  element.classList.add('list-infos');
+  element.setAttribute('id', id);
+  element.classList.add('draggable');
+  element.setAttribute('draggable', false);
+
+  element.innerHTML = `
     <div class="checkboxContainer">
         <input class="checkInput" type="checkbox" hidden>
         <label for="checkInput" class="checkboxLabel"></label>
@@ -124,68 +125,69 @@ const createTodoItem = (id,value)=>{
         </svg>
     </div>
     `;
-   listParent.appendChild(element);
 
-   const listIinfos =  document.getElementsByTagName('li');
-   const labels = document.querySelectorAll('.checkboxLabel');
-   const close = document.querySelectorAll('.close-container svg');
+  listParent.insertBefore(element, listParent.firstChild);
 
-   for(let i =0; i<labels.length; i++){
-       labels[i].addEventListener('click',checkCurrent);
-   }
+  const labels = document.querySelectorAll('.checkboxLabel');
+  const close = document.querySelectorAll('.close-container svg');
 
-   for(let i= 0; i< close.length; i++){
-       close[i].addEventListener('click',RemoveCurrent);
-   }
+  for (let i = 0; i < labels.length; i++) {
+    labels[i].addEventListener('click', checkCurrent);
+  }
 
-   //console.log(listIinfos);return;
-   sortList(listIinfos);
+  for (let i = 0; i < close.length; i++) {
+    close[i].addEventListener('click', RemoveCurrent);
+  }
 };
+
 
 let dragindex=0;
 let dropindex=0;
 let clone="";
 
-function sortList(target){
+function setupDragAndDrop() {
+  const listItems = document.querySelectorAll('.list-infos');
 
-    for (let i = 0; i < target.length; i++) {
-        target[i].addEventListener('dragstart', (e) => {
-        //   console.log('Drag start');
-          if (e.currentTarget.id) {
-            e.dataTransfer.setData('text', e.currentTarget.id);
-          }
-        });
-      
-        target[i].addEventListener('dragover', (e) => {
-          e.preventDefault();
-        });
-      
-        target[i].addEventListener('drop', (e) => {
-        //   console.log('Drop');
-          e.preventDefault();
-          const data = e.dataTransfer.getData('text');
-          const draggedElement = document.getElementById(data);
-          const droppedElement = e.currentTarget;
-          if (draggedElement !== droppedElement) {
-            const draggedIndex = Array.from(draggedElement.parentNode.children).indexOf(draggedElement);
-            const droppedIndex = Array.from(droppedElement.parentNode.children).indexOf(droppedElement);
-            if (draggedIndex < droppedIndex) {
-              droppedElement.parentNode.insertBefore(draggedElement, droppedElement.nextSibling);
-            } else {
-              droppedElement.parentNode.insertBefore(draggedElement, droppedElement);
-            }
+  let draggedItem = null;
 
-             // Swap the items in local storage
-            const items = JSON.parse(localStorage.getItem('list'));
-            const temp = items[draggedIndex];
-            items[draggedIndex] = items[droppedIndex];
-            items[droppedIndex] = temp;
-            localStorage.setItem('list', JSON.stringify(items));
-          }
-        });
-      }
-      
+  listItems.forEach((item) => {
+    item.setAttribute('draggable', true);
+
+    item.addEventListener('dragstart', (event) => {
+      draggedItem = event.currentTarget;
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/html', draggedItem);
+    });
+
+    item.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'move';
+    });
+
+    item.addEventListener('drop', (event) => {
+      event.preventDefault();
+      const droppedItem = event.currentTarget;
+      const parent = droppedItem.parentNode;
+
+      // Swap the elements
+      const temp = document.createElement('div');
+      parent.insertBefore(temp, draggedItem);
+      parent.insertBefore(draggedItem, droppedItem);
+      parent.insertBefore(droppedItem, temp);
+      parent.removeChild(temp);
+
+      // Update the positions in local storage
+      const items = JSON.parse(localStorage.getItem('list'));
+      const draggedIndex = Array.from(parent.children).indexOf(draggedItem);
+      const droppedIndex = Array.from(parent.children).indexOf(droppedItem);
+      const tempItem = items[draggedIndex];
+      items[draggedIndex] = items[droppedIndex];
+      items[droppedIndex] = tempItem;
+      localStorage.setItem('list', JSON.stringify(items));
+    });
+  });
 }
+
 
 
 const checkCurrent = (e)=>{
@@ -193,10 +195,12 @@ const checkCurrent = (e)=>{
     label.classList.toggle('checkActive');
     if (label.classList.contains('checkActive')){
         label.parentElement.nextElementSibling.style.textDecoration = 'line-through';
+        label.parentElement.nextElementSibling.style.color = '#4D5067';
         label.previousElementSibling.checked = true;
     }
     else{
         label.parentElement.nextElementSibling.style.textDecoration = 'none';
+        label.parentElement.nextElementSibling.style.color = '#fff';
         label.previousElementSibling.checked = false;
     }
     checkLeftItem();
@@ -223,13 +227,16 @@ const removeFromLocalStorage = (id)=>{
     localStorage.setItem('list',JSON.stringify(items));
 };
 
-const addToLocalStorage = (id,value) =>{
-    const listItem = {id,value};
-    let item = getLocalStorage();
-    item.push(listItem);
-    localStorage.setItem('list',JSON.stringify(item));
-    checkLeftItem();
+const addToLocalStorage = () => {
+  const items = [];
+  listParent.querySelectorAll('.list-infos').forEach((item, index) => {
+    const id = item.id;
+    const value = item.querySelector('.item-info').textContent;
+    items.push({ id, value, position: index });
+  });
+  localStorage.setItem('list', JSON.stringify(items));
 };
+
 
 const getLocalStorage = () =>{
     return localStorage.getItem('list')
@@ -237,15 +244,17 @@ const getLocalStorage = () =>{
     :[];
 };
 
-//get and set items from local storage onwindows loaded
-const setupItems = () =>{
-    let item = getLocalStorage();
-    if(item.length > 0){
-        item.forEach(listItem => {
-            createTodoItem(listItem.id,listItem.value);
-        });
-    }
-    checkLeftItem();
-}
+const setupItems = () => {
+  let items = getLocalStorage();
+  if (items.length > 0) {
+    items.sort((a, b) => a.position - b.position);
+    items.forEach((listItem) => {
+      createTodoItem(listItem.id, listItem.value, listItem.position);
+    });
+  }
+  checkLeftItem();
+  setupDragAndDrop();
+};
+
 
 window.addEventListener('load',setupItems);
