@@ -139,28 +139,19 @@
     cursor: pointer;
     transition: .5s ease;
 }
-.checkboxLabel:hover{
+ .checkboxLabel:hover{
     transition: .5s ease;
-    border: 1.5px solid  rgb(255, 105, 180);
-    
-}
-
+    border: 1.5px solid  hsl(192, 100%, 67%);    
+} 
+  
 .checkboxLabel.checkActive{
     border: none;
     background-image: url(/images/icon-check.svg);
     size: 10px;
     background-size: cover; 
     background-position: center;
-    /* background-repeat: no-repeat; */
-    transform: scale(1) !important; 
+    
 
-    /* display: inline-block;
-    width: 2.2rem;
-    height: 2.2rem;
-    cursor: pointer;
-    border-radius: 50%;
-    margin-right: 1.2rem;
-    transition: transform 300ms ease-in-out; */
 }
 
 
@@ -281,9 +272,11 @@
     color: var(--fontColorGray);
     cursor: pointer;
 } 
-.active-class-items #all{
-    color: #3A7CFD !important;
+.active-class-items a:focus{
+    color: rgba(58, 124, 253, 1);
+    ;
 }
+
 .active-class-items a:hover{
     transition: .5s ease;
     color: var(--fontColor);
