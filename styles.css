@@ -32,14 +32,15 @@
     --boxShadow:hsl(235, 21%, 11%);
     --dropZones:hsl(234, 11%, 52%);
     --highLight:hsl(237, 14%, 26%);
+    --bgImage:linear-gradient(hsl(235, 24%, 19%), hsl(235, 24%, 19%)), linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
 
     background: var(--bg);
     color: var(--fontColor);
 }
 
 .light{
-    --bg:hsl(0, 0%, 98%);
-    --fontColor:hsl(235, 19%, 35%);
+    --bg:#f2f2f2;
+    --fontColor:hsl(235, 19%, 35%); 
     --fontColorGray:hsl(233, 11%, 84%);
     --fontColorGrayHover:hsl(236, 9%, 61%);
     --headerBg:url(./images/bg-desktop-light.jpg);
@@ -49,6 +50,7 @@
     --boxShadow:hsl(234, 39%, 85%);
     --dropZones:hsl(234, 39%, 85%);
     --highLight:hsl(236, 9%, 61%);
+    --bgImage:linear-gradient(hsl(0, 0%, 100%), hsl(0, 0%, 100%)), linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
 
 
 
@@ -134,16 +136,24 @@
     position: absolute;
     width: 20px;
     height: 20px;
-    border-radius: 100%;
+    border-radius: 50%;
     border: 1px solid var(--fontColorGray);
     cursor: pointer;
     transition: .5s ease;
+
+    /* border: 1px solid red; */
 }
- .checkboxLabel:hover{
-    transition: .5s ease;
-    border: 1.5px solid  hsl(192, 100%, 67%);    
-} 
   
+.checkboxLabel:hover{
+    border: 1px solid transparent;
+    background-image: var(--bgImage);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+
+  }
+  
+  
+
 .checkboxLabel.checkActive{
     border: none;
     background-image: url(/images/icon-check.svg);
