@@ -195,18 +195,23 @@ function setupDragAndDrop() {
 const checkCurrent = (e)=>{
     const label = e.currentTarget;
     label.classList.toggle('checkActive');
+
+    const isLight = document.body.classList.contains('light');
+
     if (label.classList.contains('checkActive')){
         label.parentElement.nextElementSibling.style.textDecoration = 'line-through';
-        label.parentElement.nextElementSibling.style.color = '#4D5067';
+        label.parentElement.nextElementSibling.style.color = isLight ? '#D1D2DA' : '#4D5067';
         label.previousElementSibling.checked = true;
     }
     else{
         label.parentElement.nextElementSibling.style.textDecoration = 'none';
-        label.parentElement.nextElementSibling.style.color = '#fff';
+        label.parentElement.nextElementSibling.style.color =isLight ? '#494C6B' : '#C8CBE7';
         label.previousElementSibling.checked = false;
     }
     checkLeftItem();
 };
+
+
 
 
 const RemoveCurrent = (e) =>{
