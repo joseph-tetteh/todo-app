@@ -3,6 +3,31 @@ document.querySelector('.toggleBackground').addEventListener('click',()=>{
     document.body.classList.toggle('light');
 });
 
+ // Get all the links
+ const links = document.querySelectorAll(".active-class-items a");
+
+ 
+ let defaultColor = 'rgba(58, 124, 253, 1)'; 
+ let previousColor = ""; 
+
+ // Set the 'all' link as the default selected link
+ let selectedLink = document.getElementById("all");
+ selectedLink.style.color = defaultColor;
+
+ // Add click event listeners to all the links
+ links.forEach(function(link) {
+   link.addEventListener("click", function() {
+     // Reset the font color of the previously selected link
+     if (selectedLink !== link) {
+       selectedLink.style.color = previousColor;
+     }
+
+     previousColor = link.style.color; 
+     link.style.color = defaultColor;
+
+     selectedLink = link;
+   });
+ });
 
 
 //getting Items 
